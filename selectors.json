@@ -1,0 +1,32 @@
+{
+    "productPage" : {
+        "ASIN" : "#cerberus-data-metrics",
+        "name" : "#productTitle",
+        "brand" : {
+            "name" : "#bylineInfo",
+            "logo" : "#brand > img",
+            "logoByLine" : "#logoByLine"
+        },
+        "mainImage" : "#landingImage",
+        "rate" : "#acrPopover > span > a > i > span",
+        "numberOfReviews" : "#acrCustomerReviewText",
+        "firstSponsoredRelatedProductsCarousel" : "#sp_detail",
+        "secondSponsoredRelatedProductsCarousel" : "#sp_detail2",
+        "sponsoredProductsUnderAddToCart" : "#hero-quick-promo"
+    },
+    "searchPage" : {
+        "sponsoredBrand" : {
+            "brandName" : "#hsaSponsoredByBrandName",
+            "adHeadline" : "#pdagDesktopSparkleHeadline",
+            "productsBlock": "#pdagDesktopSparkleAsinsContainer",
+            "productsImagesClass": ".mediaCentralImage .imageContainer__image",
+            "firstProductDesc" : "#pdagDesktopSparkleDescription1",
+            "secondProductDesc" : "#pdagDesktopSparkleDescription2",
+            "thirdProductDesc" : "#pdagDesktopSparkleDescription3"
+        },
+        "sponsoredProducts" : {
+            "sponsoredProductsBlocks" : ".AdHolder",
+            "ASIN" : "a.a-link-normal.s-access-detail-page.s-color-twister-title-link.a-text-normal"
+        }
+    }
+}
