@@ -1,0 +1,21 @@
+Brands Ads:
+
+Brand name - hsaSponsoredByBrandName
+Ad Headline - pdagDesktopSparkleHeadline
+Products:
+1 - pdagDesktopSparkleAsinContainer1
+2 - pdagDesktopSparkleAsinContainer2
+3 - pdagDesktopSparkleAsinContainer3
+
+
+Related Brands:
+
+Block - thirdPartySponsorLinkAds
+
+Related Product:
+
+Left Block - ape_Search_auto-left-advertising-1_portal-batch-fast-btf_placement
+
+Bottom Block - ape_Search_auto-bottom-advertising-0_portal-batch-fast-btf_placement
+
+https://www.amazon.com/b/?node=17911127011

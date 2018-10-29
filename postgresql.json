@@ -1,0 +1,3 @@
+{
+    "connectionString": "postgresql://masterUsername:turburh1991@rds-postgresql-10mintutorial.cufwpu7epwlg.us-east-2.rds.amazonaws.com:5432/letsTry"
+}

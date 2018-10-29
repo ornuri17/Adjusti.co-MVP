@@ -1,0 +1,36 @@
+{
+    "productPage": {
+        "ASIN": "#ftSelectAsin",
+        "name": "#productTitle",
+        "brand": {
+            "name": "#bylineInfo",
+            "name2": "#brand"
+        },
+        "mainImage": "#landingImage",
+        "rate": "#acrPopover > span > a > i > span",
+        "numberOfReviews": "#acrCustomerReviewText",
+        "price": "#priceblock_ourprice",
+        "cupon": "#vpcButton > div > labal > span > span.a-color-success",
+        "firstSponsoredRelatedProductsCarousel": "#sp_detail",
+        "secondSponsoredRelatedProductsCarousel": "#sp_detail2",
+        "sponsoredProductsUnderAddToCart": "#hero-quick-promo"
+    },
+    "searchPage": {
+        "sponsoredBrand": {
+            "brandName": "#hsaSponsoredByBrandName",
+            "adHeadline": "#pdagDesktopSparkleHeadline",
+            "productsBlock": "#pdagDesktopSparkleAsinsContainer",
+            "productsImagesClass": ".mediaCentralImage .imageContainer__image",
+            "firstProductDesc": "#pdagDesktopSparkleDescription1",
+            "secondProductDesc": "#pdagDesktopSparkleDescription2",
+            "thirdProductDesc": "#pdagDesktopSparkleDescription3"
+        },
+        "sponsoredProducts": {
+            "sponsoredProductsBlocks": ".AdHolder",
+            "ASIN": "a.a-link-normal.s-access-detail-page.s-color-twister-title-link.a-text-normal",
+            "IdPrefix": "result_",
+            "brandNamePrefix": "[data-asin=\"",
+            "brandNameSuffix": "\"] > div > div > div > div > div > div > div > div > div > div.a-row.a-size-base.a-color-secondary"
+        }
+    }
+}
