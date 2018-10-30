@@ -36,26 +36,14 @@ app.get("/keywords", function(req, res, next) {
 });
 
 // Monitor all keywords
-// app.get("/monitorKeywords", function(req, res, next) {
-//     BL.getAllKeywords().then(keywords => {
-//         var response = [];
-//         const start = async () => {
-//             await asyncForEach(
-//                 keywords,
-//                 async keyword => {
-//                     await BL.monitorKeyword(keyword).then(res => {
-//                         response.push(res);
-//                     })
-//                 }
-//             );
-//         };
-//         await start();
-//         if (response.length == 0) {
-//             res.status(400).send(response);
-//         }
-//         res.status(200).send(response);
-//     });
-// });
+app.get("/monitorKeywords", function(req, res, next) {
+    BL.monitorAllKeywords().then(response => {
+        if (response.length == 0) {
+            res.status(400).send(response);
+        }
+        res.status(200).send("Finished");
+    });
+});
 
 // Get spondsored products by keyword
 app.post("/keyword", function(req, res, next) {

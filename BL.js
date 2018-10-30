@@ -73,6 +73,7 @@ function checkIfKeywordExists(keyword) {
 
 // Monitor keyword
 function monitorKeyword(keyword) {
+    console.log("Monitoring: ", keyword);
     return new Promise((resolve, reject) => {
         keywordMonitor.monitorKeyword(keyword).then(async keywordJson => {
             if (keywordJson.sponsoredProducts != undefined) {
@@ -85,12 +86,13 @@ function monitorKeyword(keyword) {
                             await checkIfProductExistsByASIN(
                                 sponsoreProduct.ASIN
                             ).then(async product => {
-                                if (product) {
-                                    resolve(product);
-                                } else {
+                                if (!product) {
                                     await addProduct(sponsoreProduct.ASIN).then(
                                         response => {
-                                            return response;
+                                            console.log(
+                                                "Added: ",
+                                                sponsoreProduct.ASIN
+                                            );
                                         }
                                     );
                                 }
@@ -108,6 +110,24 @@ function monitorKeyword(keyword) {
             } else {
                 resolve();
             }
+        });
+    });
+}
+
+function monitorAllKeywords() {
+    return new Promise((resolve, reject) => {
+        getAllKeywords().then(async results => {
+            var keywords = results.data;
+            var response = [];
+            const start = async () => {
+                await asyncForEach(keywords, async keywordJson => {
+                    await monitorKeyword(keywordJson.keyword).then(res => {
+                        response.push(res);
+                    });
+                });
+                resolve(response);
+            };
+            start();
         });
     });
 }
@@ -205,9 +225,9 @@ function getBrandById(brandId) {
 function getBrandIDByName(brandName) {
     return new Promise((resolve, reject) => {
         // Check if brand is in the DB
-        checkIfBrandExistsByName(brandName).then(response => {
-            if (response.id) {
-                resolve(response.id);
+        checkIfBrandExistsByName(brandName).then(brandJson => {
+            if (brandJson) {
+                resolve(brandJson.id);
             } else {
                 addBrand(brandName).then(response => {
                     resolve(response.data.id);
@@ -221,14 +241,8 @@ function getBrandIDByName(brandName) {
 function addBrand(brandName) {
     return new Promise((resolve, reject) => {
         if (brandName != "") {
-            checkIfBrandExistsByName(brandName).then(brand => {
-                if (brand) {
-                    resolve(brand);
-                } else {
-                    DAL.addBrand(brandName).then(brand => {
-                        resolve(brand.data);
-                    });
-                }
+            DAL.addBrand(brandName).then(brand => {
+                resolve(brand.data);
             });
         } else {
             resolve(brandName);
@@ -311,6 +325,7 @@ function addSponsoredProductsByKeyword(keyword, products) {
 
 module.exports = {
     monitorKeyword: monitorKeyword,
+    monitorAllKeywords: monitorAllKeywords,
     addSponsoredProductByKeyword: addSponsoredProductByKeyword,
     addSponsoredProductsByKeyword: addSponsoredProductsByKeyword,
     getSponsoredProductsByKeyword: getSponsoredProductsByKeyword,

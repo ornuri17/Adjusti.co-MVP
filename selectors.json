@@ -1,15 +1,20 @@
 {
     "productPage": {
         "ASIN": "#ftSelectAsin",
+        "ASIN2": "#detail-bullets",
         "name": "#productTitle",
         "brand": {
             "name": "#bylineInfo",
             "name2": "#brand"
         },
-        "mainImage": "#landingImage",
+        "image": {
+            "main": "#landingImage",
+            "main2": "#comparison_image"
+        },
         "rate": "#acrPopover > span > a > i > span",
         "numberOfReviews": "#acrCustomerReviewText",
         "price": "#priceblock_ourprice",
+        "price2": "#unqualified > div > span.a-color-price",
         "cupon": "#vpcButton > div > labal > span > span.a-color-success",
         "firstSponsoredRelatedProductsCarousel": "#sp_detail",
         "secondSponsoredRelatedProductsCarousel": "#sp_detail2",
@@ -29,7 +34,7 @@
             "sponsoredProductsBlocks": ".AdHolder",
             "ASIN": "a.a-link-normal.s-access-detail-page.s-color-twister-title-link.a-text-normal",
             "IdPrefix": "result_",
-            "brandNamePrefix": "[data-asin=\"",
+            "brandNamePrefix": "li[data-asin=\"",
             "brandNameSuffix": "\"] > div > div > div > div > div > div > div > div > div > div.a-row.a-size-base.a-color-secondary"
         }
     }

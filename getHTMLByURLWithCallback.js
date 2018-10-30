@@ -3,7 +3,7 @@
 const rp = require("request-promise");
 const cheerio = require("cheerio");
 
-module.exports = (URL, callback) => {
+module.exports = (URL, callback, secondParameter) => {
     return new Promise((resolve, reject) => {
         const options = {
             uri: URL,
@@ -14,7 +14,7 @@ module.exports = (URL, callback) => {
 
         rp(options)
             .then(async $ => {
-                resolve(await callback($));
+                resolve(await callback($, secondParameter));
             })
             .catch(err => {
                 console.log(err);

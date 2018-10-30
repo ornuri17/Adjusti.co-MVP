@@ -20,7 +20,9 @@ var getHTMLByURLWithCallback = require("./getHTMLByURLWithCallback.js");
 // Gets an ASIN, retrieves the product page HTML and runs a callback
 function getProductPageHTMLWithCallback(ASIN, callback) {
     return new Promise((resolve, reject) => {
-        resolve(getHTMLByURLWithCallback(urls.productPage + ASIN, callback));
+        resolve(
+            getHTMLByURLWithCallback(urls.productPage + ASIN, callback, ASIN)
+        );
     });
 }
 
@@ -28,7 +30,7 @@ function getProductPageHTMLWithCallback(ASIN, callback) {
 // Gets an ASIN and returns the product details
 function getProductDetails(productASIN) {
     return new Promise((resolve, reject) => {
-        console.log("ASIN : ", productASIN);
+        console.log("Adding product ASIN : ", productASIN);
         resolve(
             getProductPageHTMLWithCallback(
                 productASIN,
@@ -76,10 +78,11 @@ function getProductSponsoredRelatedProducts(ASIN) {
 
 // **PRIVATE**
 // Gets product page HTML and returns the product's details
-function getProductDetailsFromHTML($) {
+function getProductDetailsFromHTML($, productASIN) {
     return new Promise(async (resolve, reject) => {
         var productDetails = await {
-            ASIN: await getProductASINFromHTML($),
+            // ASIN: await getProductASINFromHTML($),
+            ASIN: productASIN,
             name: await getProductNameFromHTML($),
             mainImage: await getProductMainImageFromHTML($),
             rate: await getProductRateFromHTML($),
@@ -89,7 +92,6 @@ function getProductDetailsFromHTML($) {
         };
         productDetails.brand = await getProductBrandFromHTML(
             $,
-            productDetails.name,
             productDetails.ASIN
         );
         resolve(productDetails);
@@ -98,7 +100,7 @@ function getProductDetailsFromHTML($) {
 
 // **PRIVATE**
 // Gets product page HTML and returns the product's brand
-function getProductBrandFromHTML($, productName, productASIN) {
+function getProductBrandFromHTML($, productASIN) {
     return new Promise((resolve, reject) => {
         var productBrandName = $(selectors.productPage.brand.name).text();
         var productBrandName2 = $(selectors.productPage.brand.name2).attr(
@@ -117,11 +119,9 @@ function getProductBrandFromHTML($, productName, productASIN) {
         } else if (productBrandName2 != undefined && productBrandName2 != "") {
             resolve(productBrandName2);
         } else {
-            getBrandNameOfSpecificProduct(productName, productASIN).then(
-                productBrandName => {
-                    resolve(productBrandName);
-                }
-            );
+            getProductBrandWithSize(productASIN).then(productBrandName => {
+                resolve(productBrandName);
+            });
         }
     });
 }
@@ -142,7 +142,13 @@ function getProductNameFromHTML($) {
 // Gets product page HTML and returns the product's main image
 function getProductMainImageFromHTML($) {
     return new Promise((resolve, reject) => {
-        resolve($(selectors.productPage.mainImage).attr("data-old-hires"));
+        var mainImage = $(selectors.productPage.image.main).attr(
+            "data-old-hires"
+        );
+        if (mainImage == "") {
+            mainImage = $(selectors.productPage.image.main2).attr("src");
+        }
+        resolve(mainImage);
     });
 }
 
@@ -150,7 +156,11 @@ function getProductMainImageFromHTML($) {
 // Gets product page HTML and returns the product's ASIN
 function getProductASINFromHTML($) {
     return new Promise((resolve, reject) => {
-        resolve($(selectors.productPage.ASIN).attr("value"));
+        var ASIN = $(selectors.productPage.ASIN).attr("value");
+        if (ASIN == undefined || ASIN == "") {
+            ASIN = $("#detail-bullets").find("li")[1].children[1].data;
+        }
+        resolve(ASIN);
     });
 }
 
@@ -160,6 +170,9 @@ function getProductRateFromHTML($) {
     return new Promise((resolve, reject) => {
         var rate = $(selectors.productPage.rate).text();
         rate = rate.substring(0, rate.indexOf("stars") + 5);
+        if (rate == "") {
+            rate = "No rate";
+        }
         resolve(rate);
     });
 }
@@ -172,6 +185,9 @@ function getProductNumberOfReviewsFromHTML($) {
         numberOfReviews = numberOfReviews
             .substring(0, numberOfReviews.indexOf(" "))
             .replace(",", "");
+        if (numberOfReviews == "") {
+            numberOfReviews = 0;
+        }
         resolve(numberOfReviews);
     });
 }
@@ -180,7 +196,11 @@ function getProductNumberOfReviewsFromHTML($) {
 // Gets product page HTML and returns the product's price
 function getProductPriceFromHTML($) {
     return new Promise((resolve, reject) => {
-        resolve($(selectors.productPage.price).text());
+        var price = $(selectors.productPage.price).text();
+        if (price == undefined || price == "") {
+            price = $(selectors.productPage.price2).text();
+        }
+        resolve(price);
     });
 }
 
@@ -249,17 +269,13 @@ function getSponsoredRelatedProductsFromHTML($) {
     });
 }
 
-// getBrandNameOfSpecificProduct(
-//     "MusclePharm Combat Protein Powder",
-//     "B003BVI5FW"
-// ).then(a => {
-//     console.log(a);
-// });
-
-function getBrandNameOfSpecificProduct(productName, productASIN) {
+function getProductBrandWithSize(productASIN) {
     return new Promise((resolve, reject) => {
         const options = {
-            uri: urls.searchPage + productName,
+            uri:
+                urls.productPage +
+                productASIN +
+                urls.chooseSizeForProductPageURL,
             transform: async function(body) {
                 return await cheerio.load(body);
             }
@@ -267,7 +283,7 @@ function getBrandNameOfSpecificProduct(productName, productASIN) {
 
         rp(options)
             .then(async $ => {
-                getBrandNameOfSpecificProductFromHTML($, productASIN).then(
+                getProductBrandWithSizeFromHTML($, productASIN).then(
                     brandName => {
                         resolve(brandName);
                     }
@@ -279,16 +295,25 @@ function getBrandNameOfSpecificProduct(productName, productASIN) {
     });
 }
 
-function getBrandNameOfSpecificProductFromHTML($, productASIN) {
+function getProductBrandWithSizeFromHTML($, productASIN) {
     return new Promise((resolve, reject) => {
-        var brandName = $(
-            selectors.searchPage.sponsoredProducts.brandNamePrefix +
-                productASIN +
-                selectors.searchPage.sponsoredProducts.brandNameSuffix
+        var productBrandName = $(selectors.productPage.brand.name).text();
+        var productBrandName2 = $(selectors.productPage.brand.name2).attr(
+            "href"
         );
-        brandName = brandName.text().substring(3);
-        console.log(brandName);
-        resolve(brandName);
+        if (productBrandName2 != undefined) {
+            productBrandName2.substring(1);
+            productBrandName2 = productBrandName2.substring(
+                0,
+                productBrandName2.indexOf("/")
+            );
+        }
+
+        if (productBrandName != undefined && productBrandName != "") {
+            resolve(productBrandName);
+        } else {
+            resolve(productBrandName2);
+        }
     });
 }
 

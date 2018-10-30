@@ -1,4 +1,5 @@
 {
     "productPage": "https://www.amazon.com/dp/",
+    "chooseSizeForProductPageURL": "?psc=1",
     "searchPage": "https://www.amazon.com/s?k="
 }

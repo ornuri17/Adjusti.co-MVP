@@ -19,7 +19,7 @@ const client = new Client({
 //     pool.end();
 // });
 checkConnection();
-deleteKeyword("grass fed whey protein powder");
+// deleteKeyword("grass fed whey protein powder");
 
 function checkConnection() {
     return new Promise((resolve, reject) => {
@@ -42,7 +42,7 @@ function checkConnection() {
 
 function getAllKeywords() {
     return new Promise((resolve, reject) => {
-        client.query(`SELECT * FROM keywords`, (err, result) => {
+        client.query(`SELECT keyword FROM keywords`, (err, result) => {
             if (err) {
                 console.log("not able to get connection " + err);
                 resolve({
@@ -191,7 +191,7 @@ function addProduct(product) {
         client.query(
             `INSERT INTO products VALUES (
                 '${product.ASIN}', 
-                '${product.name.replace("'", "''")}',
+                '${product.name.replace(/'/g, "''")}',
                 '${product.brand}',
                 '${product.mainImage}',
                 '${product.rate}',
